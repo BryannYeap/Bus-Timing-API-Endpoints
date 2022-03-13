@@ -1,12 +1,11 @@
 package externalAPIResponse
 
 type BusLineAPIResponse struct {
-	ExternalID string `json"external_id"`
-	ID int `json"id"`
-	Name string `json"name"`
-	Vehicles []Vehicle `json"vehicles"`
+	ID int
+	Name string
+	Vehicles []Vehicle
 }
 
 type Vehicle struct {
-	Vehicle_ID int `json"vehicle_id"`
+	Vehicle_ID int
 }

@@ -1,21 +1,20 @@
 package externalAPIResponse
 
 type BusStopAPIResponse struct {
-	ExternalID string `json"external_id"`
-	Forecast []Forecast `json"forecast"`
-	ID int `json"id"`
-	Name string `json"name"`
+	Forecast []Forecast
+	ID int
+	Name string
 }
 
 type Forecast struct {
-	Forecast_Seconds float64 `json"forecast_seconds"`
-	Route Route `json"route"`
-	RV_ID int `json"rv_id"`
-	Vehicle_ID int `json"vehicle_id"`
+	Forecast_Seconds float64
+	Route Route
+	RV_ID int
+	Vehicle_ID int
 }
 
 type Route struct {
-	ID int `json"id"`
-	Name string `json"name"`
+	ID int
+	Name string
 }
 

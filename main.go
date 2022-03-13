@@ -7,25 +7,16 @@ import (
   "net/http"
   "os"
   "encoding/json"
-
+  "github.com/gorilla/mux"
   "github.com/BryannYeap/take_home_assignment/externalAPIResponse"
 )
 
-/**
-func testArticles(w http.ResponseWriter, r *http.Request) {
-  articles := Articles{
-    Article{Title: "Test title"},
-  }
-
-  json.NewEncoder(w).Encode(articles)
-}
-**/
 func homePage(w http.ResponseWriter, r *http.Request) {
     fmt.Fprintf(w, "<html> Navigate here to see API end point documentation: " +
         "<a href='https://github.com/BryannYeap/take_home_assignment'> Bus Timing API Endpoints </a></html>")
 }
 
-func performGetRequest(url string) {
+func performGetRequest(url string) []byte {
     response, err := http.Get(url)
     if err != nil {
     fmt.Println(err)
@@ -41,26 +32,71 @@ func performGetRequest(url string) {
     }
     //responseString.Write(content)
 
-    var responseObject externalAPIResponse.BusLineAPIResponse
-    //var responseObject externalAPIResponse.BusStopAPIResponse
-    jsonErr := json.Unmarshal(content, &responseObject)
-    if jsonErr != nil {
-        fmt.Println(err)
-        os.Exit(1)
-    }
-
-    // fmt.Println(responseString.String())
-    fmt.Printf("%+v\n", responseObject);
+    return content
 }
 
 func handleRequests() {
-    http.HandleFunc("/", homePage)
-    //http.HandleFunc("/articles", testArticles)
-    log.Fatal(http.ListenAndServe(":4000", nil))
+    myRouter := mux.NewRouter().StrictSlash(true)
+
+    myRouter.HandleFunc("/", homePage)
+    myRouter.HandleFunc("/busstop/{id}", busStop)
+    myRouter.HandleFunc("/busline/{id}", busLine)
+    log.Fatal(http.ListenAndServe(":4000", myRouter))
+}
+
+func getEncoder(w http.ResponseWriter) *json.Encoder  {
+    encoder := json.NewEncoder(w)
+    encoder.SetEscapeHTML(false)
+    encoder.SetIndent("", "    ")
+    return encoder
+}
+
+func busStop(w http.ResponseWriter, r *http.Request) {
+    params := mux.Vars(r)
+    busStop := getBusStop(params["id"])
+    getEncoder(w).Encode(busStop)
+}
+
+func getBusStop(id string) externalAPIResponse.BusStopAPIResponse {
+    const getBusStopURL = "https://dummy.uwave.sg/busstop/"
+    var busStopResponseObject externalAPIResponse.BusStopAPIResponse
+    
+    content := performGetRequest(getBusStopURL + id)
+
+    jsonErr := json.Unmarshal(content, &busStopResponseObject)
+    if jsonErr != nil {
+        fmt.Println(jsonErr)
+        os.Exit(1)
+    }
+
+    return busStopResponseObject
+    // fmt.Println(responseString.String())
+    //fmt.Printf("%+v\n", busStopResponseObject);  
+}
+
+func busLine(w http.ResponseWriter, r *http.Request) {
+    params := mux.Vars(r)
+    busLine := getBusLine(params["id"])
+    getEncoder(w).Encode(busLine)
+}
+
+func getBusLine(id string) externalAPIResponse.BusLineAPIResponse {
+    const getBusLineURL = "https://dummy.uwave.sg/busline/"
+    var busLineResponseObject externalAPIResponse.BusLineAPIResponse
+
+    content := performGetRequest(getBusLineURL + id)
+
+    jsonErr := json.Unmarshal(content, &busLineResponseObject)
+    if jsonErr != nil {
+        fmt.Println(jsonErr)
+        os.Exit(1)
+    }
+
+    return busLineResponseObject
+    // fmt.Println(responseString.String())
+    //fmt.Printf("%+v\n", busStopResponseObject);  
 }
 
 func main() {
     handleRequests()
-    //performGetRequest("https://dummy.uwave.sg/busstop/378204")
-    //performGetRequest("https://dummy.uwave.sg/busline/44478")
 }

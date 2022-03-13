@@ -52,11 +52,16 @@ func instantiateBusTimingUsingBus(busWithBusLines busTimingService.BusWithBusLin
                 for _, busForecast := range busForecasts {
                 busInBusForecast := busForecast.Bus
                 if busInBusForecast == bus {
-                    newBusForecasts = append(newBusForecasts, busForecast)
+                    newBusForecasts = append(newBusForecasts, busTimingService.BusForecast{
+                        Bus: busForecast.Bus,
+	                    Forecast_In_Seconds: busForecast.Forecast_In_Seconds,
+	                    Forecast_In_Minutes: busForecast.Forecast_In_Minutes,
+                    })
                 } 
             }
             busStop.BusForecasts = newBusForecasts
         }
+        busLinesWithBusStops = append(busLinesWithBusStops, busLineWithBusStops)
     }
 
     return busTimingService.BusTiming{

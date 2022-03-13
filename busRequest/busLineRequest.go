@@ -37,9 +37,21 @@ func getBusLine(busLineID string) (externalAPIResponse.BusLineAPIResponse, error
 }
 
 func convertBusLineAPIResponseObjectToBusLine(
-        busLineAPIResponseObject externalAPIResponse.BusLineAPIResponse) busTimingService.BusLine {
-    return busTimingService.BusLine{
-        RV_ID: busLineAPIResponseObject.ID,
-        Name: busLineAPIResponseObject.Name,
+        busLineAPIResponseObject externalAPIResponse.BusLineAPIResponse) busTimingService.BusLineWithBuses {
+
+    buses := []busTimingService.Bus{}
+
+    for _, vehicle := range busLineAPIResponseObject.Vehicles {
+        buses = append(buses, busTimingService.Bus{
+            Vehicle_ID: vehicle.Vehicle_ID,
+        })
+    }
+
+    return busTimingService.BusLineWithBuses{
+        BusLine: busTimingService.BusLine{
+            RV_ID: busLineAPIResponseObject.ID,
+            Name: busLineAPIResponseObject.Name,
+        },
+        Buses: buses,
     }
 }

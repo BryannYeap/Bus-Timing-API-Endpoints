@@ -22,5 +22,5 @@ func handleRequests() {
     myRouter.HandleFunc("/currentbuses", busRequest.CurrentBusesRequest)
     myRouter.HandleFunc("/bustiming/{bus_vehicleid}", busRequest.BusTimingRequest)
 
-    log.Fatal(http.ListenAndServe(":4000", myRouter))
+    log.Fatal(http.ListenAndServe(":8080", myRouter))
 }

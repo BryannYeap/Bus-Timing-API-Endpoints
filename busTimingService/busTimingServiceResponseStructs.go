@@ -6,9 +6,9 @@ type BusStop struct {
 	BusForecasts []BusForecast `json:",omitempty"`
 }
 
-type BusLine struct {
-	RV_ID int
-	Name string
+type BusLineWithBuses struct {
+	BusLine BusLine
+	Buses []Bus
 }
 
 type BusLineWithBusStops struct {

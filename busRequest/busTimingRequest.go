@@ -60,6 +60,7 @@ func instantiateBusTimingUsingBus(busWithBusLines busTimingService.BusWithBusLin
                         Bus: busForecast.Bus,
 	                    Forecast_In_Seconds: busForecast.Forecast_In_Seconds,
 	                    Forecast_In_Minutes: busForecast.Forecast_In_Minutes,
+                        BusLine: busForecast.BusLine,
                     })
                 } 
             }

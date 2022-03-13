@@ -1,7 +1,7 @@
 package externalAPIResponse
 
 type BusStopAPIResponse struct {
-  ExternalID int `json"external_id"`
+  ExternalID string `json"external_id"`
   Forecasts []Forecast `json"forecast"`
 }
 

@@ -142,7 +142,7 @@ func getCurrentBuses() busTimingService.CurrentBuses {
         for _, busLineID := range busLineIDs {
             busLineIDInt, _ := strconv.Atoi(busLineID)
             busLines = append(busLines, busTimingService.BusLine{
-                ID: busLineIDInt,
+                RV_ID: busLineIDInt,
                 Name: busLineIDtoNameMap[busLineID],
             })
         }

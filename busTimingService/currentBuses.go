@@ -10,6 +10,6 @@ type Bus struct {
 }
 
 type BusLine struct {
-	ID int
+	RV_ID int
 	Name string
 }

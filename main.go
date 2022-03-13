@@ -2,7 +2,6 @@ package main
 
 import (
   "fmt"
-  "strconv"
   "io/ioutil"
   "log"
   "net/http"
@@ -60,8 +59,6 @@ func getBusStop(id string) externalAPIResponse.BusStopAPIResponse {
     }
 
     return busStopResponseObject
-    // fmt.Println(responseString.String())
-    //fmt.Printf("%+v\n", busStopResponseObject);  
 }
 
 func performGetRequest(url string) []byte {
@@ -73,12 +70,10 @@ func performGetRequest(url string) []byte {
 
     defer response.Body.Close()
 
-    //var responseString strings.Builder
     content, err := ioutil.ReadAll(response.Body)
     if err != nil {
         log.Fatal(err)
     }
-    //responseString.Write(content)
 
     return content
 }
@@ -109,8 +104,6 @@ func getBusLine(id string) externalAPIResponse.BusLineAPIResponse {
     }
 
     return busLineResponseObject
-    // fmt.Println(responseString.String())
-    //fmt.Printf("%+v\n", busStopResponseObject);  
 }
 
 func currentBuses(w http.ResponseWriter, r *http.Request) {
@@ -121,32 +114,24 @@ func getCurrentBuses() busTimingService.CurrentBuses {
     var busLineAPIResponse externalAPIResponse.BusLineAPIResponse
     var buses []busTimingService.Bus
 
-    busIDToBusLineIDsMap := make(map[int][]string)
-    busLineIDtoNameMap := make(map[string]string)
+    busIDToBusLinesMap := make(map[int][]busTimingService.BusLine)
 
     for _, busLineID := range busLineIDs {
         busLineAPIResponse = getBusLine(busLineID)
-        _, exists := busLineIDtoNameMap[busLineID]
-        if !exists {
-            busLineIDtoNameMap[busLineID] = busLineAPIResponse.Name
-        }
 
         for _, bus := range busLineAPIResponse.Vehicles {
-            busIDToBusLineIDsMap[bus.Vehicle_ID] = append(busIDToBusLineIDsMap[bus.Vehicle_ID], busLineID)
+            busIDInt := bus.Vehicle_ID
+            rvID := busLineAPIResponse.ID
+            routeName := busLineAPIResponse.Name
+
+            busIDToBusLinesMap[busIDInt] = append(busIDToBusLinesMap[busIDInt], busTimingService.BusLine{
+                RV_ID: rvID,
+                Name: routeName,
+            })
         }
     }
 
-    for busID, busLineIDs := range busIDToBusLineIDsMap {
-        var busLines []busTimingService.BusLine
-
-        for _, busLineID := range busLineIDs {
-            busLineIDInt, _ := strconv.Atoi(busLineID)
-            busLines = append(busLines, busTimingService.BusLine{
-                RV_ID: busLineIDInt,
-                Name: busLineIDtoNameMap[busLineID],
-            })
-        }
-
+    for busID, busLines := range busIDToBusLinesMap {
         buses = append(buses, busTimingService.Bus{
             Vehicle_ID: busID,
             BusLines: busLines,

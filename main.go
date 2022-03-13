@@ -7,6 +7,7 @@ import (
   "net/http"
   "os"
   "encoding/json"
+
   "github.com/BryannYeap/take_home_assignment/externalAPIResponse"
 )
 
@@ -20,14 +21,15 @@ func testArticles(w http.ResponseWriter, r *http.Request) {
 }
 **/
 func homePage(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "<h1>HOMEPAGE<h1>")
+    fmt.Fprintf(w, "<html> Navigate here to see API end point documentation: " +
+        "<a href='https://github.com/BryannYeap/take_home_assignment'> Bus Timing API Endpoints </a></html>")
 }
 
 func performGetRequest(url string) {
     response, err := http.Get(url)
     if err != nil {
     fmt.Println(err)
-    os.Exit(1)
+        os.Exit(1)
     }
 
     defer response.Body.Close()
@@ -35,7 +37,7 @@ func performGetRequest(url string) {
     //var responseString strings.Builder
     content, err := ioutil.ReadAll(response.Body)
     if err != nil {
-    log.Fatal(err)
+        log.Fatal(err)
     }
     //responseString.Write(content)
 
@@ -43,8 +45,8 @@ func performGetRequest(url string) {
     //var responseObject externalAPIResponse.BusStopAPIResponse
     jsonErr := json.Unmarshal(content, &responseObject)
     if jsonErr != nil {
-    fmt.Println(err)
-    os.Exit(1)
+        fmt.Println(err)
+        os.Exit(1)
     }
 
     // fmt.Println(responseString.String())
@@ -58,7 +60,7 @@ func handleRequests() {
 }
 
 func main() {
-    //handleRequests()
+    handleRequests()
     //performGetRequest("https://dummy.uwave.sg/busstop/378204")
-    performGetRequest("https://dummy.uwave.sg/busline/44478")
+    //performGetRequest("https://dummy.uwave.sg/busline/44478")
 }

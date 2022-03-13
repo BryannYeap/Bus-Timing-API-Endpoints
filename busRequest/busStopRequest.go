@@ -1,8 +1,6 @@
 package busRequest
 
 import (
-    "fmt"
-    "os"
     "net/http"
     "encoding/json"
 
@@ -12,11 +10,17 @@ import (
 
 func BusStopRequest(w http.ResponseWriter, r *http.Request) {
     params := mux.Vars(r)
-    busStop := getBusStop(params["id"])
-    getEncoder(w).Encode(busStop)
+    encoder := getEncoder(w)
+    busStop, err := getBusStop(params["id"])
+
+    if err != nil {
+        encoder.Encode(BusRequestError{ErrorMessage: err.Error()})
+    } else {
+        encoder.Encode(busStop)
+    }
 }
 
-func getBusStop(busStopID string) externalAPIResponse.BusStopAPIResponse {
+func getBusStop(busStopID string) (externalAPIResponse.BusStopAPIResponse, error) {
     const getBusStopURL = "https://dummy.uwave.sg/busstop/"
     var busStopResponseObject externalAPIResponse.BusStopAPIResponse
     
@@ -24,9 +28,8 @@ func getBusStop(busStopID string) externalAPIResponse.BusStopAPIResponse {
 
     jsonErr := json.Unmarshal(content, &busStopResponseObject)
     if jsonErr != nil {
-        fmt.Println(jsonErr)
-        os.Exit(1)
+        return externalAPIResponse.BusStopAPIResponse{}, invalidBusStopIDError
     }
 
-    return busStopResponseObject
+    return busStopResponseObject, nil
 }

@@ -15,7 +15,7 @@ func getCurrentBuses() busTimingService.CurrentBuses {
     busIDToBusLinesMap := make(map[int][]busTimingService.BusLine)
 
     for _, busLineID := range busLineIDs {
-        busLineAPIResponse := getBusLine(busLineID)
+        busLineAPIResponse, _ := getBusLine(busLineID)
 
         for _, bus := range busLineAPIResponse.Vehicles {
             busIDInt := bus.Vehicle_ID

@@ -8,11 +8,17 @@ import (
 )
 
 func BusLineWithBusStopsRequest(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-    busLineWithBusStops := getBusLineWithBusStopsWithoutForecast(params["id"])
-    getEncoder(w).Encode(busLineWithBusStops)
+    params := mux.Vars(r)
+    encoder := getEncoder(w)
+    busLineWithBusStops, err := getBusLineWithBusStopsWithoutForecast(params["id"])
+
+    if err != nil {
+        encoder.Encode(BusRequestError{ErrorMessage: err.Error()})
+    } else {
+        encoder.Encode(busLineWithBusStops)
+    }
 }
 
-func getBusLineWithBusStopsWithoutForecast(busLineID string) busTimingService.BusLineWithBusStops {
+func getBusLineWithBusStopsWithoutForecast(busLineID string) (busTimingService.BusLineWithBusStops, error) {
     return getBusLineWithBusStops(busLineID, false)
 }

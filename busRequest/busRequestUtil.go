@@ -1,8 +1,9 @@
 package busRequest
 
 import (
-    "fmt"
-    "os"
+"fmt"
+"os"
+    "errors"
     "log"
     "strconv"
     "io/ioutil"
@@ -45,20 +46,26 @@ func getEncoder(w http.ResponseWriter) *json.Encoder  {
     return encoder
 }
 
-func getBusLineWithBusStops(busLineID string, includeBusForecast bool) busTimingService.BusLineWithBusStops {
+func getBusLineWithBusStops(busLineID string, includeBusForecast bool) (busTimingService.BusLineWithBusStops, error) {
     busStops := []busTimingService.BusStop{}
-    busLineAPIResponse := getBusLine(busLineID)
+    
+    busLineAPIResponse, getBusLineErr := getBusLine(busLineID)
+    busLineIDInt, convertErr := convertStringToInt(busLineID)
+    if getBusLineErr != nil || convertErr != nil {
+        return busTimingService.BusLineWithBusStops{}, invalidBusLineIDError
+    }
+
     busLine := busTimingService.BusLine{
         RV_ID: busLineAPIResponse.ID,
         Name: busLineAPIResponse.Name,
     }
 
     for _, busStopID := range busStopIDs {
-        busStopAPIResponse := getBusStop(busStopID)
+        busStopAPIResponse, _ := getBusStop(busStopID)
         forecasts := busStopAPIResponse.Forecast
 
         for _, forecast := range forecasts {
-            if forecast.RV_ID == convertStringToInt(busLineID) {
+            if forecast.RV_ID == busLineIDInt {
                 busStops = append(busStops, instantiateBusStop(busStopAPIResponse, includeBusForecast))
                 break;
             }
@@ -68,7 +75,7 @@ func getBusLineWithBusStops(busLineID string, includeBusForecast bool) busTiming
     return busTimingService.BusLineWithBusStops{
         BusLine: busLine,
         BusStops: busStops,
-    }
+    }, nil
 }
 
 func instantiateBusStop(busStopAPIResponse externalAPIResponse.BusStopAPIResponse,
@@ -81,7 +88,7 @@ func instantiateBusStop(busStopAPIResponse externalAPIResponse.BusStopAPIRespons
     if includeBusForecast {
         busForecasts := []busTimingService.BusForecast{}
         for _, forecast := range forecasts {
-            busLineAPIResponse := getBusLine(convertIntToString(forecast.RV_ID))
+            busLineAPIResponse, _ := getBusLine(convertIntToString(forecast.RV_ID))
             busForecasts = append(busForecasts, busTimingService.BusForecast{
                 Bus: busTimingService.Bus{Vehicle_ID: forecast.Vehicle_ID},
                 Forecast_In_Seconds: forecast.Forecast_Seconds,
@@ -106,13 +113,12 @@ func instantiateBusStop(busStopAPIResponse externalAPIResponse.BusStopAPIRespons
     }
 }
 
-func convertStringToInt(stringToConvert string) int {
+func convertStringToInt(stringToConvert string) (int, error) {
     intToReturn, err := strconv.Atoi(stringToConvert)
     if err != nil {
-        fmt.Println(err)
-        os.Exit(1)
+        return 0, errors.New("Cannot convert given string to integer")
     }
-    return intToReturn
+    return intToReturn, nil
 }
 
 func convertIntToString(intToConvert int) string {

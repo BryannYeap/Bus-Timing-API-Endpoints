@@ -1,8 +1,6 @@
 package busRequest
 
 import (
-    "fmt"
-    "os"
     "net/http"
 
     "github.com/gorilla/mux"
@@ -11,41 +9,47 @@ import (
 
 func BusTimingRequest(w http.ResponseWriter, r *http.Request) {
     params := mux.Vars(r)
-    busTiming := getBusTiming(params["id"])
-    getEncoder(w).Encode(busTiming)
+    encoder := getEncoder(w)
+    busTiming, err := getBusTiming(params["id"])
+
+    if err != nil {
+        encoder.Encode(BusRequestError{ErrorMessage: err.Error()})
+    } else {
+        encoder.Encode(busTiming)
+    }
 }
 
-func getBusTiming(busID string) busTimingService.BusTiming {
+func getBusTiming(busID string) (busTimingService.BusTiming, error) {
     var busWithBusLines busTimingService.BusWithBusLines
 
     busFound := false
     currentBuses := getCurrentBuses()
+    busIDInt, convertErr := convertStringToInt(busID)
 
     for indexOfBus := range currentBuses.Buses {
         busWithBusLines = currentBuses.Buses[indexOfBus]
         bus := busWithBusLines.Bus
 
-        if bus.Vehicle_ID == convertStringToInt(busID) {
+        if bus.Vehicle_ID == busIDInt {
             busFound = true
             break;
         }
     }
 
-    if !busFound {
-        fmt.Println("Bus not found")
-        os.Exit(1)
+    if convertErr != nil || !busFound {
+        return busTimingService.BusTiming{}, invalidVehicleIDError
     }
 
-    return instantiateBusTimingUsingBus(busWithBusLines)
+    return instantiateBusTimingUsingBus(busWithBusLines), nil
 }
 
 func instantiateBusTimingUsingBus(busWithBusLines busTimingService.BusWithBusLines) busTimingService.BusTiming {
     bus := busWithBusLines.Bus
     busLinesWithBusStops := []busTimingService.BusLineWithBusStops{}
-    
+
     busLines := busWithBusLines.BusLines
     for _, busLine := range busLines {
-        busLineWithBusStops := getBusLineWithBusStops(convertIntToString(busLine.RV_ID), true)
+        busLineWithBusStops, _ := getBusLineWithBusStops(convertIntToString(busLine.RV_ID), true)
         for _, busStop := range busLineWithBusStops.BusStops {
             newBusForecasts := []busTimingService.BusForecast{}
             busForecasts := busStop.BusForecasts

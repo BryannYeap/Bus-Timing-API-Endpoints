@@ -1,8 +1,6 @@
 package busRequest
 
 import (
-    "fmt"
-    "os"
     "net/http"
     "encoding/json"
 
@@ -12,11 +10,17 @@ import (
 
 func BusLineRequest(w http.ResponseWriter, r *http.Request) {
     params := mux.Vars(r)
-    busLine := getBusLine(params["id"])
-    getEncoder(w).Encode(busLine)
+    encoder := getEncoder(w)
+    busLine, err := getBusLine(params["id"])
+
+    if err != nil {
+        encoder.Encode(BusRequestError{ErrorMessage: err.Error()})
+    } else {
+        encoder.Encode(busLine)
+    }
 }
 
-func getBusLine(busLineID string) externalAPIResponse.BusLineAPIResponse {
+func getBusLine(busLineID string) (externalAPIResponse.BusLineAPIResponse, error) {
     const getBusLineURL = "https://dummy.uwave.sg/busline/"
     var busLineResponseObject externalAPIResponse.BusLineAPIResponse
 
@@ -24,9 +28,8 @@ func getBusLine(busLineID string) externalAPIResponse.BusLineAPIResponse {
 
     jsonErr := json.Unmarshal(content, &busLineResponseObject)
     if jsonErr != nil {
-        fmt.Println(jsonErr)
-        os.Exit(1)
+        return externalAPIResponse.BusLineAPIResponse{}, invalidBusLineIDError
     }
 
-    return busLineResponseObject
+    return busLineResponseObject, nil
 }

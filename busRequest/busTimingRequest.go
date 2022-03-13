@@ -10,7 +10,7 @@ import (
 func BusTimingRequest(w http.ResponseWriter, r *http.Request) {
     params := mux.Vars(r)
     encoder := getEncoder(w)
-    busTiming, err := getBusTiming(params["id"])
+    busTiming, err := getBusTiming(params["bus_vehicleid"])
 
     if err != nil {
         encoder.Encode(BusRequestError{ErrorMessage: err.Error()})

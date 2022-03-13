@@ -10,7 +10,7 @@ import (
 func BusLineWithBusStopsRequest(w http.ResponseWriter, r *http.Request) {
     params := mux.Vars(r)
     encoder := getEncoder(w)
-    busLineWithBusStops, err := getBusLineWithBusStopsWithoutForecast(params["id"])
+    busLineWithBusStops, err := getBusLineWithBusStopsWithoutForecast(params["busline_id"])
 
     if err != nil {
         encoder.Encode(BusRequestError{ErrorMessage: err.Error()})

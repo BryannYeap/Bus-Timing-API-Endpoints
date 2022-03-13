@@ -12,8 +12,8 @@ import (
 func BusLineRequest(w http.ResponseWriter, r *http.Request) {
     params := mux.Vars(r)
     encoder := getEncoder(w)
-    _, convertErr := convertStringToInt(params["id"])
-    busLine, err := getBusLine(params["id"])
+    _, convertErr := convertStringToInt(params["busline_id"])
+    busLine, err := getBusLine(params["busline_id"])
 
     if convertErr != nil || err != nil {
         encoder.Encode(BusRequestError{ErrorMessage: invalidBusLineIDError.Error()})

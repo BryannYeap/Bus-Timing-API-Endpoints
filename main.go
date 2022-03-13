@@ -10,7 +10,7 @@ import (
   "github.com/BryannYeap/take_home_assignment/externalAPIResponse"
 )
 
-
+/**
 func testArticles(w http.ResponseWriter, r *http.Request) {
   articles := Articles{
     Article{Title: "Test title"},
@@ -18,7 +18,7 @@ func testArticles(w http.ResponseWriter, r *http.Request) {
 
   json.NewEncoder(w).Encode(articles)
 }
-
+**/
 func homePage(w http.ResponseWriter, r *http.Request) {
   fmt.Fprintf(w, "<h1>HOMEPAGE<h1>")
 }
@@ -39,10 +39,11 @@ func performGetRequest(url string) {
   }
   //responseString.Write(content)
 
-  var responseObject BusStopAPIResponse
+  var responseObject externalAPIResponse.BusStopAPIResponse
   jsonErr := json.Unmarshal(content, &responseObject)
   if jsonErr != nil {
     fmt.Println(err)
+    os.Exit(1)
   }
 
  // fmt.Println(responseString.String())
@@ -51,7 +52,7 @@ func performGetRequest(url string) {
 
 func handleRequests() {
   http.HandleFunc("/", homePage)
-  http.HandleFunc("/articles", testArticles)
+  //http.HandleFunc("/articles", testArticles)
   log.Fatal(http.ListenAndServe(":4000", nil))
 }
 

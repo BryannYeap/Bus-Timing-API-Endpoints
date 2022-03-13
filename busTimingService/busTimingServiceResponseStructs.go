@@ -10,6 +10,6 @@ type CurrentBuses struct {
 }
 
 type BusTiming struct {
-	Bus_ID int
-	Routes []Route
+	Bus Bus
+	BusLines []BusLineWithBusStops
 }

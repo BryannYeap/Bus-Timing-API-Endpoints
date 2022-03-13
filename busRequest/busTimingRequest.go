@@ -20,13 +20,12 @@ func getBusTiming(busID string) busTimingService.BusTiming {
 
     busFound := false
     currentBuses := getCurrentBuses()
-    busIDInt := convertStringToInt(busID) // <- no need own line
 
     for indexOfBus := range currentBuses.Buses {
         busWithBusLines = currentBuses.Buses[indexOfBus]
         bus := busWithBusLines.Bus
 
-        if bus.Vehicle_ID == busIDInt {
+        if bus.Vehicle_ID == convertStringToInt(busID) {
             busFound = true
             break;
         }
@@ -41,13 +40,27 @@ func getBusTiming(busID string) busTimingService.BusTiming {
 }
 
 func instantiateBusTimingUsingBus(busWithBusLines busTimingService.BusWithBusLines) busTimingService.BusTiming {
-    //var busTiming busTimingService.BusTiming
-    /**
     bus := busWithBusLines.Bus
+    busLinesWithBusStops := []busTimingService.BusLineWithBusStops{}
+    
     busLines := busWithBusLines.BusLines
-    busId := bus.Vehicle_ID
-    **/
-    var route []busTimingService.Route 
+    for _, busLine := range busLines {
+        busLineWithBusStops := getBusLineWithBusStops(convertIntToString(busLine.RV_ID), true)
+        for _, busStop := range busLineWithBusStops.BusStops {
+            newBusForecasts := []busTimingService.BusForecast{}
+            busForecasts := busStop.BusForecasts
+                for _, busForecast := range busForecasts {
+                busInBusForecast := busForecast.Bus
+                if busInBusForecast == bus {
+                    newBusForecasts = append(newBusForecasts, busForecast)
+                } 
+            }
+            busStop.BusForecasts = newBusForecasts
+        }
+    }
 
-    return busTimingService.BusTiming{3, route}
+    return busTimingService.BusTiming{
+        Bus: bus,
+        BusLines: busLinesWithBusStops,
+    }
 }

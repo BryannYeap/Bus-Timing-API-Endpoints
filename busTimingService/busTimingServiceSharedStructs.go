@@ -26,8 +26,3 @@ type BusWithBusLines struct {
 	Bus Bus
 	BusLines []BusLine
 }
-
-type Route struct {
-	BusLine BusLine
-	BusStops []BusStop
-}

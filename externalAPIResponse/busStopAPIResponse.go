@@ -17,4 +17,3 @@ type Route struct {
 	ID int
 	Name string
 }
-

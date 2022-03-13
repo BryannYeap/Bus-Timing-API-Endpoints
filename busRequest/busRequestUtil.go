@@ -83,28 +83,9 @@ func instantiateBusStop(busStopAPIResponse externalAPIResponse.BusStopAPIRespons
     
     busStopID := busStopAPIResponse.ID
     name := busStopAPIResponse.Name
-    forecasts := busStopAPIResponse.Forecast
 
     if includeBusForecast {
-        busForecasts := []busTimingService.BusForecast{}
-        for _, forecast := range forecasts {
-            busLineAPIResponse, _ := getBusLine(convertIntToString(forecast.RV_ID))
-            busForecasts = append(busForecasts, busTimingService.BusForecast{
-                Bus: busTimingService.Bus{Vehicle_ID: forecast.Vehicle_ID},
-                Forecast_In_Seconds: forecast.Forecast_Seconds,
-	            Forecast_In_Minutes: forecast.Forecast_Seconds / 60,
-	            BusLine: busTimingService.BusLine{
-                    RV_ID: busLineAPIResponse.ID,
-                    Name: busLineAPIResponse.Name,
-                },
-            })
-        }
-
-        return busTimingService.BusStop{
-            BusStop_ID: busStopID,
-            Name: name,
-            BusForecasts: busForecasts,
-        }
+        return convertBusStopAPIResponseObjectToBusStop(busStopAPIResponse)
     } else {
         return busTimingService.BusStop{
             BusStop_ID: busStopID,

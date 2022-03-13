@@ -1,16 +1,5 @@
 package busTimingService
 
-type BusLine struct {
-	RV_ID int
-	Name string
-}
-
-type BusStop struct {
-	BusStop_ID int
-	Name string
-	BusForecasts []BusForecast `json:",omitempty"`
-}
-
 type BusForecast struct {
 	Bus Bus
 	Forecast_In_Seconds float64

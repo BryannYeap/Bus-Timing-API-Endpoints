@@ -1,9 +1,11 @@
 package busTimingService
 
 type BusTiming struct {
-	Bus_ID string
+	Bus_ID int
+	Routes []Route
 }
 
 type Route struct {
-	Test int
+	BusLine BusLine
+	//BusForecast BusForecast
 }

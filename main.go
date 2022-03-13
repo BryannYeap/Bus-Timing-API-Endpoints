@@ -18,6 +18,7 @@ func handleRequests() {
     myRouter.HandleFunc("/", busRequest.HomePageRequest)
     myRouter.HandleFunc("/busstop/{id}", busRequest.BusStopRequest)
     myRouter.HandleFunc("/busline/{id}", busRequest.BusLineRequest)
+    myRouter.HandleFunc("/busline_with_busstops/{id}", busRequest.BusLineWithBusStopsRequest)
     myRouter.HandleFunc("/currentbuses", busRequest.CurrentBusesRequest)
     myRouter.HandleFunc("/bustiming/{id}", busRequest.BusTimingRequest)
 

@@ -3,7 +3,6 @@ package busRequest
 import (
     "net/http"
 
-    "github.com/BryannYeap/take_home_assignment/externalAPIResponse"
     "github.com/BryannYeap/take_home_assignment/busTimingService"
 )
 
@@ -12,13 +11,11 @@ func CurrentBusesRequest(w http.ResponseWriter, r *http.Request) {
 }
 
 func getCurrentBuses() busTimingService.CurrentBuses {
-    var busLineAPIResponse externalAPIResponse.BusLineAPIResponse
-    var buses []busTimingService.Bus
-
+    buses := []busTimingService.BusWithBusLines{}
     busIDToBusLinesMap := make(map[int][]busTimingService.BusLine)
 
     for _, busLineID := range busLineIDs {
-        busLineAPIResponse = getBusLine(busLineID)
+        busLineAPIResponse := getBusLine(busLineID)
 
         for _, bus := range busLineAPIResponse.Vehicles {
             busIDInt := bus.Vehicle_ID
@@ -33,8 +30,9 @@ func getCurrentBuses() busTimingService.CurrentBuses {
     }
 
     for busID, busLines := range busIDToBusLinesMap {
-        buses = append(buses, busTimingService.Bus{
-            Vehicle_ID: busID,
+        bus := busTimingService.Bus{Vehicle_ID: busID}
+        buses = append(buses, busTimingService.BusWithBusLines{
+            Bus: bus,
             BusLines: busLines,
         })
     }

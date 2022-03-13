@@ -16,14 +16,16 @@ func BusTimingRequest(w http.ResponseWriter, r *http.Request) {
 }
 
 func getBusTiming(busID string) busTimingService.BusTiming {
-    var bus busTimingService.Bus
+    var busWithBusLines busTimingService.BusWithBusLines
 
     busFound := false
     currentBuses := getCurrentBuses()
-    busIDInt := convertStringToInt(busID)
+    busIDInt := convertStringToInt(busID) // <- no need own line
 
     for indexOfBus := range currentBuses.Buses {
-        bus = currentBuses.Buses[indexOfBus]
+        busWithBusLines = currentBuses.Buses[indexOfBus]
+        bus := busWithBusLines.Bus
+
         if bus.Vehicle_ID == busIDInt {
             busFound = true
             break;
@@ -35,14 +37,16 @@ func getBusTiming(busID string) busTimingService.BusTiming {
         os.Exit(1)
     }
 
-    return instantiateBusTimingUsingBus(bus)
+    return instantiateBusTimingUsingBus(busWithBusLines)
 }
 
-func instantiateBusTimingUsingBus(bus busTimingService.Bus) busTimingService.BusTiming {
-    //var busTimingService.busTiming
-
-    //busId := bus.Vehicle_ID
-    //busLines := bus.BusLines
+func instantiateBusTimingUsingBus(busWithBusLines busTimingService.BusWithBusLines) busTimingService.BusTiming {
+    //var busTiming busTimingService.BusTiming
+    /**
+    bus := busWithBusLines.Bus
+    busLines := busWithBusLines.BusLines
+    busId := bus.Vehicle_ID
+    **/
     var route []busTimingService.Route 
 
     return busTimingService.BusTiming{3, route}

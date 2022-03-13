@@ -40,6 +40,7 @@ func performGetRequest(url string) {
     //responseString.Write(content)
 
     var responseObject externalAPIResponse.BusLineAPIResponse
+    //var responseObject externalAPIResponse.BusStopAPIResponse
     jsonErr := json.Unmarshal(content, &responseObject)
     if jsonErr != nil {
     fmt.Println(err)

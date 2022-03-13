@@ -8,5 +8,5 @@ type BusLineAPIResponse struct {
 }
 
 type Vehicle struct {
-	VehicleID int `json"vehicle_id"`
+	Vehicle_ID int `json"vehicle_id"`
 }

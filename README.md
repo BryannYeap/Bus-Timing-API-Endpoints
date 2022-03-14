@@ -71,6 +71,22 @@ Params: The vehicle id of the bus to be queried
 
 Response: Gets the id (given) of the bus, and all bus lines that this bus is currently serving. Additionally, for every bus line that this bus is serving, the forecasts of __this bus__ for all of the bus stops on the bus line will be retrieved.
 
+## System Plans
+
+### Justification for each API endpoint
+
+#### BusStop and BusLine API endpoints
+
+These endpoints mostly correspond to the given external endpoints, just omitting fields that are irrelevant to a bus timing service.
+
+#### BusLine with Busstops
+
+This endpoint allows clients to easily obtain all the bus stops in the route of a given bus line. This functionality is so useful that it is even used in order to compute the response for the next endpoint.
+
+#### Bus Timing
+
+This endpoint is the most important endpoint in this bus timing service. As its name suggest, it provides all the forecasts for this bus. This consists of the forecasts (pertaining to this bus) in every bus stop of every bus line that this bus is a part of. This is the prime functionality of a bus timing service. 
+
 ### Code Structure
 
 #### Package: externalAPIResponse
@@ -94,3 +110,7 @@ Here is an example of the logical flow of the program:
     3. The methods called from the busRequest package will eventually query the external API, in order to retrive information from it and store it in a struct that was declared in the externalAPIResponse package (i.e. The struct `BusLineAPIResponse` in the file `busLineAPIResponse.go`)
     4. The busRequest methods will then instantiate and respond to the client with structs from the busTimingService package, after choosing, filtering, and formatting the appropriate fields from the externalAPIResponse object (i.e. The struct `BusLineWithBuses` from the file `busTimingServiceResponseStructs.go` will be returned)
 
+### Additional Considerations and Assumptions
+
+Every request will result in a recomputing of the response. This includes responses that iterate through the entire list of possible bus stop ids (i.e. BusLine with BusStops request), or the list of possible bus line ids (i.e. Current Buses request). This is because I believe the trade-off of efficiency for accuracy is worth it. The service of providing bus timing does not require instant updates with no lag, as compared to a service such as obtaining stock values from the stock market. In contrast, a bus timing service should be more concerned about providing accurate results. Thus, fetching the results from the external API with every request will provide the most accurate results, as the results could change at any time. 
+However, a possible optimisation that I did not implement could be caching certain results that can tolerate a little less accuracy, and periodically fetching them. For example, the Current Buses request iterates through all the bus lines to obtain all buses that are currently on the bus lines. This result is unlikely to change every minute, or every few minutes. Thus, this could be cached, and periodically re-fetched to update.

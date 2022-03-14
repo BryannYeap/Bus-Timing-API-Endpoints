@@ -69,7 +69,7 @@ APT Endpoint: `"/bustiming/{bus_vehicleid}"`
 
 Params: The vehicle id of the bus to be queried
 
-Response: Gets the id (given) of the bus, and all bus lines that this bus is currently serving. Additionally, for every bus line that this bus is serving, the forecasts of this bus for all of the bus stops on the bus line will be retrieved.
+Response: Gets the id (given) of the bus, and all bus lines that this bus is currently serving. Additionally, for every bus line that this bus is serving, the forecasts of **this bus** for all of the bus stops on the bus line will be retrieved.
 
 ### Code Structure
 

@@ -70,3 +70,18 @@ APT Endpoint: `"/bustiming/{bus_vehicleid}"`
 Params: The vehicle id of the bus to be queried
 
 Response: Gets the id (given) of the bus, and all bus lines that this bus is currently serving. Additionally, for every bus line that this bus is serving, the forecasts of this bus for all of the bus stops on the bus line will be retrieved.
+
+### Code Structure
+
+#### Package: externalAPIResponse
+
+This package contains the structs obtained from performing a get request using the given external API. However, the structs only contain fields that I believe are useful for the bus timing service. For instance, fields that were originally present such as locations (i.e. lon and lat), projections, stats, etc were omitted from the structs in externalAPIResponse. A client does not need to know the location of the bus stops and bus lines in order to provide a bus timing, since the forecast was already provided by the external API.
+
+#### Package: busTimingService
+
+This package contains the structs that are used / provided to the clients. The file `busTimingServiceResponseStructs.go` contain all the structs that are returned as responses to HTTP requests of the bus timing service API. The file `busTimingServiceSharedStructs.go` contain all the intermediate or base structs that are used as fields in the response structs mentioned earlier.
+
+
+#### Packge: busRequest
+
+This package contain files that each encapsulate a HTTP request of the bus timing service API. Each file contains functions relevant to the request that it encapsulates.

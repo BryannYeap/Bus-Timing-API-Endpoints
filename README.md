@@ -6,7 +6,7 @@ To test out the service, follow the steps below:
   1. Download the zip and extract the code from [here](https://github.com/BryannYeap/take_home_assignment)
   2. Navigate into the take_home_assignment directory and run the command `go build`
   3. An executable file will be created. Run that file. 
-      - Alternatively, obtain the executable file from [here](https://github.com/BryannYeap/take_home_assignment/releases/tag/v1.0)
+      - Alternatively, obtain the executable file from [here](https://github.com/BryannYeap/take_home_assignment/releases/tag/v1.1)
   4. Upon running the file, open your brower and type `"localhost:8080"` followed by any of the API endpoints given below
 
 Note: The curly brackets in the API endpoints are params

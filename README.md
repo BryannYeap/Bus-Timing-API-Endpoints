@@ -81,7 +81,7 @@ These endpoints mostly correspond to the given external endpoints, just omitting
 
 #### BusLine with Busstops
 
-This endpoint allows clients to easily obtain all the bus stops in the route of a given bus line. This functionality is so useful that it is even used in order to compute the response for the next endpoint.
+This endpoint allows clients to easily obtain all the bus stops in the route of a given bus line. This functionality is so useful that it is even used in order to compute the response for the following endpoint.
 
 #### Bus Timing
 

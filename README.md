@@ -88,7 +88,7 @@ This package contain files that each encapsulate a HTTP request of the bus timin
 ### Program Flow
 
 Here is an example of the logical flow of the program:
-    1. An API endpoint will be queried, for instance, `"/busline/44480"`
-    2. The main function will handle the request by calling methods from the busRequest package (i.e. from the file `busLineRequest.go`)
-    3. The methods called from the busRequest package will eventually query the external API, in order to retrive information from it and store it in a struct that was declared in the externalAPIResponse package (i.e. The struct `BusLineAPIResponse` in the file `busLineAPIResponse.go`)
-    4. The busRequest methods will then instantiate and respond to the client with structs from the busTimingService package, after choosing, filtering, and formatting the appropriate fields from the externalAPIResponse object (i.e. The struct `BusLineWithBuses` from the file `busTimingServiceResponseStructs.go` will be returned)
+        1. An API endpoint will be queried, for instance, `"/busline/44480"`
+        2. The main function will handle the request by calling methods from the busRequest package (i.e. from the file `busLineRequest.go`)
+        3. The methods called from the busRequest package will eventually query the external API, in order to retrive information from it and store it in a struct that was declared in the externalAPIResponse package (i.e. The struct `BusLineAPIResponse` in the file `busLineAPIResponse.go`)
+        4. The busRequest methods will then instantiate and respond to the client with structs from the busTimingService package, after choosing, filtering, and formatting the appropriate fields from the externalAPIResponse object (i.e. The struct `BusLineWithBuses` from the file `busTimingServiceResponseStructs.go` will be returned)
